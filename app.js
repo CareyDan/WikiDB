@@ -1,4 +1,5 @@
-
+// Wiki-API/app.js
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -9,18 +10,22 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-const DB = "wikiDB";
-//const uri = "mongodb://localhost:27017/wikiDB";
-const uri = "mongodb+srv://Admin-Carey:test123@cluster0.25aqz.mongodb.net/" + DB + "?retryWrites=true&w=majority";
+const dbHost = process.env.DB_HOST
+const dbPort = process.env.DB_PORT
+const dbUser = process.env.DB_USER
+const dbPass = process.env.DB_PASS
+const dbName = process.env.DB_NAME
+const appPort = process.env.APP_PORT
+
+//const uri = "mongodb://" + dbHost + ":" + dbPort + "/" + dbName;
+//const uri = "mongodb+srv://" + dbUser + ":" + dbPass + "@cluster0.25aqz.mongodb.net/" + dbName + "?retryWrites=true&w=majority";
+const uri = "mongodb+srv://" + dbUser + ":" + dbPass + "@cluster0.25aqz.mongodb.net/" + dbName + "?retryWrites=true&w=majority";
+console.log(uri);
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true });
 
 let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 3000;
-};
-app.listen(port, function() {
-  console.log("Server started on port: " + port);
-});
+if (port == null || port == "") { port = appPort; };
+app.listen(port, function() { console.log("Server started on port: " + port); });
 
 const articleSchema = {
   title: String,
